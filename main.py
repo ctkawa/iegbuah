@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import emparelhamento
 import Tkinter
+import tkMessageBox
+import tkFileDialog
 import time
 
 
@@ -75,12 +77,25 @@ class Main:
 		lgrafoIn = Tkinter.Label(f, text="\n\n\n\n\n<Grafo Bipartido de Entrada>\n\n\n\n\n")
 		lgrafoIn.pack()
 		
+		bAbrir = Tkinter.Button(f, text="Abrir...", command = self.abrirArquivoMatrizAdjacente() )
+		bAbrir.pack()
+		
 		lgrafoOut = Tkinter.Label(f, text="\n\n\n\n\n<Grafo Emparelhado de Saída>\n\n\n\n\n")
 		lgrafoOut.pack()
 		
 		bnext = Tkinter.Button(f, text="Terminar", command = self.telaFinal )
 		bnext.pack()
-		
-
+		return
+	
+	
+	def abrirArquivoMatrizAdjacente(self):
+		print "Abrindo..."
+		#filename = tkFileDialog.askopenfilename(filetypes = [('Text Files', ('.txt', '.py'))], initialdir = "~")
+		#filename = tkFileDialog.askopenfilename()
+		filename = "/home/cleber/Documents/UFSCar/TG/projeto_final/MatrizAdjacencia.txt"
+		if filename != "":
+			self.hungaro.lerGrafoDoArquivoMatrizAdjacente(filename)
+		exit()
+		return
 
 m = Main()
