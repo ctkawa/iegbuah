@@ -12,7 +12,7 @@ class Main:
 		
 		self.janela = Tkinter.Tk()
 		self.janela.title("IEGBUAH")
-		self.janela.geometry("300x500+100+100")
+		#self.janela.geometry("300x500+100+100")
 		
 		self.telaInicio()
 		self.janela.mainloop()
@@ -75,9 +75,8 @@ class Main:
 		
 		
 		# pede o endereço da imagem
-		filename = tkFileDialog.askopenfilename()
-		self.hungaro.lerGrafoDoArquivoMatrizAdjacente(filename)
-		
+		self.abrirArquivoMatrizAdjacente()
+
 		# mostra o grafo
 		
 		f1 = Tkinter.Frame(f)
@@ -108,7 +107,7 @@ class Main:
 		sb2x = Tkinter.Scrollbar(f2, orient=Tkinter.HORIZONTAL)
 		sb2y = Tkinter.Scrollbar(f2, orient=Tkinter.VERTICAL)
 		
-		img2 = Tkinter.PhotoImage(file='grafoBipartido.gif')
+		img2 = Tkinter.PhotoImage(file='grafoEmparelhado.gif')
 		lgrafoOut = Tkinter.Canvas(f2, xscrollcommand=sb2x.set, yscrollcommand=sb2y.set)
 		
 		sb2x.pack(side=Tkinter.BOTTOM, fill=Tkinter.X)
@@ -129,7 +128,11 @@ class Main:
 	
 	
 	def abrirArquivoMatrizAdjacente(self):
+		
+		filename = tkFileDialog.askopenfilename()
+		
 		print "Abrindo..."
+		
 		#filename = tkFileDialog.askopenfilename(filetypes = [('Text Files', ('.txt', '.py'))], initialdir = "~")
 		#filename = tkFileDialog.askopenfilename()
 		#filename = "/home/cleber/Documents/UFSCar/TG/projeto_final/MatrizAdjacencia.txt"
