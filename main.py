@@ -73,17 +73,58 @@ class Main:
 		ltitulo = Tkinter.Label(f, text="IEGBUAH")
 		ltitulo.pack()
 		
-		lgrafoIn = Tkinter.Label(f, text="\n\n\n\n\n<Grafo Bipartido de Entrada>\n\n\n\n\n")
+		
+		# pede o endereço da imagem
+		filename = tkFileDialog.askopenfilename()
+		self.hungaro.lerGrafoDoArquivoMatrizAdjacente(filename)
+		
+		# mostra o grafo
+		
+		f1 = Tkinter.Frame(f)
+		f1.pack()
+		
+		sb1x = Tkinter.Scrollbar(f1, orient=Tkinter.HORIZONTAL)
+		sb1y = Tkinter.Scrollbar(f1, orient=Tkinter.VERTICAL)
+		
+		img1 = Tkinter.PhotoImage(file='grafo.gif')
+		lgrafoIn = Tkinter.Canvas(f1, xscrollcommand=sb1x.set, yscrollcommand=sb1y.set)
+		
+		sb1x.pack(side=Tkinter.BOTTOM, fill=Tkinter.X)
+		sb1x.config(command=lgrafoIn.xview)
+		
+		sb1y.pack(side=Tkinter.RIGHT, fill=Tkinter.Y)
+		sb1y.config(command=lgrafoIn.yview)
+		
+		lgrafoIn.create_image((0,0), image=img1)
+		lgrafoIn.img1 = img1
 		lgrafoIn.pack()
 		
-		bAbrir = Tkinter.Button(f, text="Abrir...", command = self.abrirArquivoMatrizAdjacente() )
-		bAbrir.pack()
+		#bAbrir = Tkinter.Button(f, text="Abrir...", command = self.abrirArquivoMatrizAdjacente() )
+		#bAbrir.pack()
 		
-		lgrafoOut = Tkinter.Label(f, text="\n\n\n\n\n<Grafo Emparelhado de Saída>\n\n\n\n\n")
+		f2 = Tkinter.Frame(f)
+		f2.pack()
+		
+		sb2x = Tkinter.Scrollbar(f2, orient=Tkinter.HORIZONTAL)
+		sb2y = Tkinter.Scrollbar(f2, orient=Tkinter.VERTICAL)
+		
+		img2 = Tkinter.PhotoImage(file='grafoBipartido.gif')
+		lgrafoOut = Tkinter.Canvas(f2, xscrollcommand=sb2x.set, yscrollcommand=sb2y.set)
+		
+		sb2x.pack(side=Tkinter.BOTTOM, fill=Tkinter.X)
+		sb2x.config(command=lgrafoOut.xview)
+		
+		sb2y.pack(side=Tkinter.RIGHT, fill=Tkinter.Y)
+		sb2y.config(command=lgrafoOut.yview)
+		
+		lgrafoOut.create_image((0,0), image=img2)
+		lgrafoOut.img2 = img2
 		lgrafoOut.pack()
 		
 		bnext = Tkinter.Button(f, text="Terminar", command = self.telaFinal )
 		bnext.pack()
+		
+		
 		return
 	
 	
@@ -95,7 +136,7 @@ class Main:
 		filename = "MatrizAdjacencia.txt"
 		if filename != "":
 			self.hungaro.lerGrafoDoArquivoMatrizAdjacente(filename)
-		exit()
+		#exit()
 		return
 
 m = Main()
