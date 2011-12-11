@@ -7,7 +7,6 @@ import time
 
 
 class Main:
-	
 	def __init__(self):
 		self.hungaro = emparelhamento.Hungaro()
 		
@@ -92,7 +91,8 @@ class Main:
 		print "Abrindo..."
 		#filename = tkFileDialog.askopenfilename(filetypes = [('Text Files', ('.txt', '.py'))], initialdir = "~")
 		#filename = tkFileDialog.askopenfilename()
-		filename = "/home/cleber/Documents/UFSCar/TG/projeto_final/MatrizAdjacencia.txt"
+		#filename = "/home/cleber/Documents/UFSCar/TG/projeto_final/MatrizAdjacencia.txt"
+		filename = "MatrizAdjacencia.txt"
 		if filename != "":
 			self.hungaro.lerGrafoDoArquivoMatrizAdjacente(filename)
 		exit()

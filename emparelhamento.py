@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 import sys
 import gv
+from pydot import dot_parser
 from pygraph.classes.graph import graph
 from pygraph.readwrite.dot import write
 
@@ -47,5 +49,9 @@ class Hungaro:
 		img = gv.readstring(novodot)
 		gv.layout(img, 'dot')
 		gv.render(img, 'png', 'grafoOrdenado.png')
+		
+		outrodot = 'graph grafo {A [label="Fox"];B;C;D;E[color=red];F;G;H;A--E; A--F [style=dotted]; B--E; C--F [style=dotted]; C--G; C--H; {rank=same; A B C D} }'
+		img = dot_parser.parse_dot_data(outrodot)
+		img.write_png('grafoOrdenado2.png')
 
 		return
