@@ -6,63 +6,59 @@ class Hungaro:
 		return "Algoritmo Hungaro"
 	
 	def lerGrafoDoArquivoMatrizAdjacente(self, caminho):
-		#arquivo = open(caminho, 'r')
-		#self.grafo = graph()
-		#MAX_NO = 100
-		
-		#loop de 1 ate MAX_NO inclusive
-		#for i in range(1, MAX_NO+1):
-			#linha = arquivo.readline()
-			#if linha!='':
-				#lista = linha.split('\t')
-				#if i==1:
-					#lista_no = []
-					#contagem = 1
-					#for no in range(linha.count('\t')):
-						#lista_no.insert(0, str(contagem))
-						#print 'insert: '+str(contagem)
-						#contagem+=1
-					#self.grafo.add_nodes(lista_no)
-				#j = 1
-				#for cell in lista:
-					##	e = (''+str(j), ''+str(i))
-					#if cell == '1' and j>i:
-						#self.grafo.add_edge((''+str(j), ''+str(i)))
-						##self.grafo.set_edge_weight(e, 1)
-						#print 'add Edge: ' + str(j) + ' - ' + str(i)
-					##elif cell == '2' and j>i:
-					##	grafo.add_edge(e)
-					##	grafo.set_edge_weight(e, 2)
-					##	print 'add Edge Emparelhado: ' + str(j) + ' - ' + str(i)
-					#j+=1
-			#else:
-				#break
-		
+		print "Lendo: "+caminho
+		arquivo = open(caminho, 'r')
 		self.grafo = pydot.Dot('Grafo', graph_type='graph' )
-		self.subgrafox = pydot.Subgraph('X', rank='same' )
-		self.subgrafoy = pydot.Subgraph('Y', rank='same' )
-		self.grafo.add_subgraph( self.subgrafox )
-		self.grafo.add_subgraph( self.subgrafoy )
+		#obter numero de no em primeira linha
+		lista = arquivo.readline().split('\t')
+		no_count = 0
+		for coluna in range(0,len(lista)):
+			self.grafo.add_node(pydot.Node(str(coluna)))
+			if lista[coluna]=="1":
+				self.grafo.add_edge(pydot.Edge(str(coluna), "1"))
+				print ' add edge:'+str(coluna)+" - 1"
+				no_count+=1
+		print "numero no: "+str(no_count)
+		#loop de toda linha, 2 ate no_count inclusive
+		for i in range(2, no_count+1):
+			linha = arquivo.readline()
+			if linha != "":
+				lista = linha.split('\t')
+				j = 1
+				for cell in lista:
+					if cell == '1' and j>i:
+						self.grafo.add_edge( pydot.Edge(str(j+i), str(i)) )
+						print 'add Edge: ' + str(j+i) + ' - ' + str(i)
+					j+=1
+			else:
+				print "Erro de leitura na Matriz de adjacencia"
+				break
 		
-		self.subgrafox.add_node(  pydot.Node("A") )
-		self.subgrafox.add_node(  pydot.Node("B") )
-		self.subgrafox.add_node(  pydot.Node("C") )
+		#self.grafo = pydot.Dot('Grafo', graph_type='graph' )
+		#self.subgrafox = pydot.Subgraph('X', rank='same' )
+		#self.subgrafoy = pydot.Subgraph('Y', rank='same' )
+		#self.grafo.add_subgraph( self.subgrafox )
+		#self.grafo.add_subgraph( self.subgrafoy )
 		
-		self.subgrafoy.add_node(  pydot.Node("D") )
-		self.subgrafoy.add_node(  pydot.Node("E") )
-		self.subgrafoy.add_node(  pydot.Node("F") )
-		self.subgrafoy.add_node(  pydot.Node("G") )
-		self.subgrafoy.add_node(  pydot.Node("H") )
+		#self.subgrafox.add_node(  pydot.Node("A") )
+		#self.subgrafox.add_node(  pydot.Node("B") )
+		#self.subgrafox.add_node(  pydot.Node("C") )
 		
-		self.grafo.add_edge( pydot.Edge("A", "E") )
-		self.grafo.add_edge( pydot.Edge("A", "F") )
-		self.grafo.add_edge( pydot.Edge("A", "G") )
-		self.grafo.add_edge( pydot.Edge("B", "E") )
-		self.grafo.add_edge( pydot.Edge("B", "F") )
-		self.grafo.add_edge( pydot.Edge("B", "H") )
-		self.grafo.add_edge( pydot.Edge("C", "F") )
-		self.grafo.add_edge( pydot.Edge("C", "G") )
-		self.grafo.add_edge( pydot.Edge("C", "H") )
+		#self.subgrafoy.add_node(  pydot.Node("D") )
+		#self.subgrafoy.add_node(  pydot.Node("E") )
+		#self.subgrafoy.add_node(  pydot.Node("F") )
+		#self.subgrafoy.add_node(  pydot.Node("G") )
+		#self.subgrafoy.add_node(  pydot.Node("H") )
+		
+		#self.grafo.add_edge( pydot.Edge("A", "E") )
+		#self.grafo.add_edge( pydot.Edge("A", "F") )
+		#self.grafo.add_edge( pydot.Edge("A", "G") )
+		#self.grafo.add_edge( pydot.Edge("B", "E") )
+		#self.grafo.add_edge( pydot.Edge("B", "F") )
+		#self.grafo.add_edge( pydot.Edge("B", "H") )
+		#self.grafo.add_edge( pydot.Edge("C", "F") )
+		#self.grafo.add_edge( pydot.Edge("C", "G") )
+		#self.grafo.add_edge( pydot.Edge("C", "H") )
 		
 		
 		self.identificaBiparticao()
@@ -99,7 +95,35 @@ class Hungaro:
 		
 		self.grafoEmp = self.grafo
 		
-		# ...
+		partX = self.grafoEmp.get_subgraph('X')
+		partY = self.grafoEmp.get_subgraph('Y')
+		
+		# Passo 1 inicializa emparelhamento M
+		
+		# Passo 2 busca vertice de X nao saturado por arestas de M
+		
+		for no in partX.get_node_list():
+			is_saturada = False
+			for aresta in self.grafoEmp.get_edge_list:
+				if 'dotted' == aresta.get_style() and (no.get_name == aresta.get_destination() or no.get_name == aresta.get_source()):
+					is_saturada = True
+			if !is_saturada:
+				S = [no]
+				T = []
+				# Passo 3 N (S ) == T -> STOP
+				#y de N (S ) que nao esteja em T
+				
+				# Passo 4
+				# se y eh saturado, S+= vertice de ligada a y, e T+=y , GOTO Passo 3
+				# senao transferencia de no ate y , GOTO Passo 2
+				
+		
+			
+		
+		
+		
+		
+		
 		
 		return
 		
@@ -108,4 +132,19 @@ class Hungaro:
 		self.grafoEmp.write_gif('grafoEmparelhado.gif')
 		
 		return
+		
+	#recebe listas de no e aresta
+	def lerGrafoBipartidoDaLista(self, particaoX, particaoY, arestas):
+		self.grafo = pydot.Dot(graph_type='graph')
+		subX = pydot.subgraph('X')
+		subY = pydot.subgraph('Y')
+		for no in particaoX:
+			subX.add_node(str(no))
+		for no in particaoY:
+			subY.add_node(str(no))
+		self.grafo.add_subgraph(subX)
+		self.grafo.add_subgraph(subY)
+		for aresta in arestas:
+			self.grafo.add_edge(str(aresta))
+		return self.grafo
 	
