@@ -1,0 +1,17 @@
+graph G {
+	subgraph X {
+		A; B; C; D;
+	};
+
+	subgraph Y {
+		E; F; G; H;
+	};
+
+	subgraph M {
+		A--E; B--F; C--F;
+	};
+	
+	A; B; C; D; E; F; G; H;
+	A--E; B--F; C--F; B--G; C--E; C--H;
+	
+}
