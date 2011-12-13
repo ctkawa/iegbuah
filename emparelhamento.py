@@ -61,6 +61,13 @@ class Hungaro:
 			elif i.get_name() == "M":
 				sgM = i
 		
+		arvore = networkx.Graph()
+		sgMx = networkx.from_pydot(sgM)
+		sgXx = networkx.from_pydot(sgX)
+		
+		S = []
+		T = []
+		
 		# segue os passo do algoritmo
 		passo = 1
 		
@@ -71,12 +78,15 @@ class Hungaro:
 			if passo == 1:
 				print "\tPasso 1"
 				
-				if sgM.get_edges().__len__() == 0 :
+				if sgMx.edges().__len__() == 0 :
 					print "O conjunto M está vazio"
 					e = self.grafoEmp.get_edges()[0]
-					sgM.add_edge( e )
-					print "O vértice " + self.imprimeVertice(e) + " foi adicionado a M"
+					sgMx.add_edge( e.get_source(), e.get_destination() )
+					print "A aresta " + self.imprimeVertice(e) + " foi adicionada a M"
 					
+				
+				self.imprimeEstado(sgX, sgY, sgMx, arvore )
+				raw_input("1")
 				
 				passo = 2
 				
@@ -90,13 +100,15 @@ class Hungaro:
 				
 				i = 0
 				encontrouNaoSaturado = False
-				sgMx = networkx.from_pydot(sgM)
 				
 				while not encontrouNaoSaturado and i < sgX.get_nodes().__len__():
+					print "loop"
 					v = sgX.get_nodes()[i]
 					if not sgMx.has_node( v.get_name() ):
 						print "Vértice não-saturado encontrado em X: "+ v.get_name()
 						encontrouNaoSaturado = True
+						S.append(v.get_name())
+					i +=1
 				
 				if not encontrouNaoSaturado:
 					print "Todos os vértices de X já estão saturados"
@@ -105,6 +117,9 @@ class Hungaro:
 					arvore = networkx.Graph()
 					arvore.add_node( v.get_name() )
 					passo = 3
+					
+				self.imprimeEstado(sgX, sgY, sgMx, arvore )
+				raw_input("2")
 				
 			#
 			# PASSO O3
@@ -114,31 +129,44 @@ class Hungaro:
 				
 				# verifica se a vizinhança tem o mesmo tamanho de T
 				
-				T = arvore.nodes()
-				sgXx = networkx.from_pydot(sgX)
-				for n in T:
-					if sgXx.has_node( n ):
-						T.remove(n)
+				#T = arvore.nodes()
+				
+				#sgXx = networkx.from_pydot(sgX)
+				#print "arvore noses: "
+				#print arvore.nodes()
+				#print "T:"
+				#print T.__len__()
+				#print T
+				#i = 0
+				#while i < T.__len__()+1:
+					#print "i"
+					#print i
+					#print "avaliando " + T[i]
+					#if sgXx.has_node( T[i] ):
+						#print "removeu" + T[i]
+						#T.remove(T[i])
+					#i += 1
 				
 				T.sort()
 				print "T = " + T.__str__()
 				
-				S = arvore.nodes()
-				sgXx = networkx.from_pydot(sgX)
-				for n in T:
-					if not sgXx.has_node( n ):
-						S.remove(n)
+				#S = arvore.nodes()
+				#for n in T:
+					#if not sgXx.has_node( n ):
+						#S.remove(n)
 				
 				S.sort()
 				print "S = " + S.__str__()
 				
 				NS = []
 				grafoEmpx = networkx.from_pydot(self.grafoEmp)
+				grafoEmpx = grafoEmpx.to_undirected()
+				
 				for n in S:
-					lvizin = grafoEmpx.neighbors( n )
-					for vizin in lvizin:
-						if not NS.__contains__( vizin ):
-							NS.append( vizin )
+					lista = grafoEmpx.neighbors(n)
+					for n2 in lista:
+						if not NS.__contains__(n2):
+							NS.append(n2)
 							
 				NS.sort()
 				print "NS = " + NS.__str__()
@@ -159,6 +187,8 @@ class Hungaro:
 					
 					passo = 4
 				
+				self.imprimeEstado(sgX, sgY, sgMx, arvore )
+				raw_input("3")
 				
 			#
 			# PASSO O4
@@ -166,63 +196,117 @@ class Hungaro:
 			elif passo == 4:
 				print "\tPasso 4"
 				
+				# verifica se y é M-saturado
 				
-				passo = 0
-				
-		
-		
-		### Passo 2 busca vertice de X nao saturado por arestas de M
-		#partxM = networkx.from_pydot(partM)
-		#partxY = networkx.from_pydot(partY)
-		#grafox = networkx.from_pydot(self.grafo)
-		
-		#i = 0
-		#fereTC = False
-		#achouMSaturado = False
-				
-				
+				if sgMx.has_node( y ):
+					print y + " é M-saturado"
 					
-					#NS = grafox.neighbors( v.get_name() )
-					#NS.sort()
-					#if NS == T:
-						#print "Este grafo não é emprelhável segundo o Teorema do Casamento"
-						#fereTC = True
-					#else:
-						## escolhe em NS elementos que não estão em T
-						#for i in NS:
-							#if T.__contains__( i.get_name() ):
-								#NS.remove( i.get_name() )
+					# adiciona novas arestas a arvore
+					
+					# busca um no na arvore que seja vizinho a y
+					lista = arvore.nodes()
+					i = 0
+					encontrou = False
+					while not encontrou and i < lista.__len__():
+						if grafoEmpx.has_edge(y, lista[i]):
+							arvore.add_edge( y, lista[i] )
+						i +=1
+					
+					
+					
+					vizin = sgMx.neighbors( y )
+					for n in sgMx.predecessors( y ):
+						if not vizin.__contains__(n):
+							vizin.append(n)
+					z = vizin[0]
 						
-						#y = NS[0]
+					arvore.add_edge( y, z )
+					
+					T.append(y)
+					S.append(z)
+					
+					passo = 3
+					
+				else:
+					print y + " é M-não-saturado"
+					
+					atual = y
+					vizin = grafoEmpx.neighbors( atual )
+					
+					encontrado = False
+					i = 0
+					while not encontrado and i < vizin.__len__():
+						if vizin[i] in arvore.nodes():
+							encontrado = True
+							prox = vizin[i]
 						
-						### Passo 4
-						### se y eh saturado, S+= vertice de ligada a y, e T+=y , GOTO Passo 3
-						### senao transferencia de no ate y , GOTO Passo 2
+					
+					
+					if sgMx.has_edge( y, prox ):
+						sgMx.remove_edge( y, prox)
+					else:
+						sgMx.add_edge( y, prox)
+					
+					anterior = y
+					atual = prox
+					
+					while atual != v.get_name():
+						vizin = arvore.neighbors( atual )
 						
-						## se y é m-saturado add yz a arvore
-						#if partxM.has_node( y.get_name() ):
-							## um vizinho de y na arvore
-							#yvizin = grafox.neighbors( y.get_name() )
-							#j = 0
-							##while partxM.neighbors( yvizin )
-							
-							## o único vizinho de y em M
-							#z = partxM.neighbors( y.get_name() )[0]
-							##S.append(z)
-							##T.append(y)
-						#else:
-							## fazer manipulação do caminho M-aumentado
-							
-							
-							#achouMSaturado = True
-			#i+= 1
+						if vizin[0] != anterior:
+							prox = vizin[0]
+						else:
+							prox = vizin[1]
+						
+						if sgMx.has_edge( atual, prox ):
+							sgMx.remove_edge( atual, prox)
+						else:
+							sgMx.add_edge( atual, prox)
+						
+						anterior = atual
+						atual = prox
+					
+					sgM = networkx.to_pydot(sgMx)
+					
+					passo = 2
+					
+				print "Emparelhamento:"
+				print sgMx.nodes()
+				print sgMx.edges()
+				
+				print "Arvore:"
+				print arvore.nodes()
+				print arvore.edges()
+				
+				self.imprimeEstado(sgX, sgY, sgMx, arvore )
+				raw_input("4")
+				
 		
 		
 		return
 		
 	def imprimeVertice(self, e):
 		return "("+e.get_source()+", "+e.get_destination()+")"
+	
+	def imprimeEstado(self, sgX, sgY, sgMx, arvore ):
+		sgXx = networkx.from_pydot(sgX)
+		print "X: "
+		print sgXx.nodes()
 		
+		sgYx = networkx.from_pydot(sgY)
+		print "Y: "
+		print sgYx.nodes()
+		
+		print "M: "
+		print sgMx.nodes()
+		print sgMx.edges()
+		
+		print "Arvore: "
+		print arvore.nodes()
+		print arvore.edges()
+		
+		return
+	
 	def geraImagemGrafoEmparelhado(self):
 		
 		self.grafoEmp.write_gif('grafoEmparelhado.gif')
