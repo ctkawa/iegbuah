@@ -116,9 +116,52 @@ class Hungaro:
 				
 				# verifica se a vizinhança tem o mesmo tamanho de T
 				
+				T = arvore.nodes()
+				sgXx = networkx.from_pydot(sgX)
+				for n in T:
+					if sgXx.has_node( n ):
+						T.remove(n)
+				
+				T.sort()
+				print "T = " + T.__str__()
+				
+				S = arvore.nodes()
+				sgXx = networkx.from_pydot(sgX)
+				for n in T:
+					if not sgXx.has_node( n ):
+						S.remove(n)
+				
+				S.sort()
+				print "S = " + S.__str__()
+				
+				NS = []
+				grafoEmpx = networkx.from_pydot(self.grafoEmp)
+				for n in S:
+					lvizin = grafoEmpx.neighbors( n )
+					for vizin in lvizin:
+						if not NS.__contains__( vizin ):
+							NS.append( vizin )
+							
+				NS.sort()
+				print "NS = " + NS.__str__()
+				
+				if NS == T:
+					print "PROBLEMA: O algoritmo não satisfaz o Teorema do Casamento"
+					passo = 0
+				else:
+					
+					# busca um y em NS que não está em T
+					candidatos = NS
+					for n in candidatos:
+						if T.__contains__ ( n ):
+							NS.remove(n)
+					
+					y = NS[0];
+					print "Escolheu "+ y +" entre NS - T: "+ candidatos.__str__()
+					
+					passo = 4
 				
 				
-				passo = 4
 			#
 			# PASSO O4
 			#
@@ -138,25 +181,8 @@ class Hungaro:
 		#i = 0
 		#fereTC = False
 		#achouMSaturado = False
-		
-		
-		
-		#while i < partX.get_nodes().__len__() and not fereTC:
-			#v = partX.get_nodes()[i]		# para cada vértice de X
-			#if not partxM.has_node( v.get_name() ):   # se é não-saturado
-				#arvore = networkx.Graph()
-				#arvore.add_node( v.get_name() )
-				##T = []
 				
 				
-				### Passo 3 N (S ) == T -> STOP
-				###y de N (S ) que nao esteja em T
-				#while not fereTC and not achouMSaturado:
-					#T = []
-					#for n in arvore.nodes():
-						#if partxY.has_node( n ):
-							#T.append( n )
-					#T.sort()
 					
 					#NS = grafox.neighbors( v.get_name() )
 					#NS.sort()
