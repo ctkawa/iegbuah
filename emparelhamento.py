@@ -63,8 +63,13 @@ class Hungaro:
 				sgM = i
 		
 		arvore = networkx.Graph()
+		pesos = {}
 		sgMx = networkx.from_pydot(sgM)
+		sgMx = sgMx.to_undirected()
 		sgXx = networkx.from_pydot(sgX)
+		sgXx = sgXx.to_undirected()
+		grafoEmpx = networkx.from_pydot(self.grafoEmp)
+		grafoEmpx = grafoEmpx.to_undirected()
 		
 		S = []
 		T = []
@@ -118,6 +123,8 @@ class Hungaro:
 				else:
 					arvore = networkx.Graph()
 					arvore.add_node( v.get_name() )
+					pesos[v.get_name()] = 0
+					
 					passo = 3
 					
 				self.imprimeEstado(sgX, sgY, sgMx, arvore )
@@ -162,8 +169,6 @@ class Hungaro:
 				print "S = " + S.__str__()
 				
 				NS = []
-				grafoEmpx = networkx.from_pydot(self.grafoEmp)
-				grafoEmpx = grafoEmpx.to_undirected()
 				
 				for n in S:
 					lista = grafoEmpx.neighbors(n)
@@ -213,17 +218,18 @@ class Hungaro:
 					while not encontrou and i < lista.__len__():
 						if grafoEmpx.has_edge(y, lista[i]):
 							arvore.add_edge( y, lista[i] )
+							pesos[y] = pesos[lista[i]] + 1
 						i +=1
 					
-					
-					
-					vizin = sgMx.neighbors( y )
-					for n in sgMx.predecessors( y ):
-						if not vizin.__contains__(n):
-							vizin.append(n)
-					z = vizin[0]
+					#vizin = sgMx.neighbors( y )
+					#for n in sgMx.predecessors( y ):
+					#	if not vizin.__contains__(n):
+					#		vizin.append(n)
+					#z = vizin[0]
+					z = sgMx.neighbors( y )[0]
 						
 					arvore.add_edge( y, z )
+					pesos[z] = pesos[y] + 1
 					
 					T.append(y)
 					S.append(z)
@@ -234,7 +240,10 @@ class Hungaro:
 					print y + " é M-não-saturado"
 					
 					atual = y
+					print "Atual = "+atual
 					vizin = grafoEmpx.neighbors( atual )
+					print "Vizinhos de y"
+					print vizin
 					
 					encontrado = False
 					i = 0
@@ -242,32 +251,50 @@ class Hungaro:
 						if vizin[i] in arvore.nodes():
 							encontrado = True
 							prox = vizin[i]
+						i += 1
 						
+					print "Proximo = " + prox
 					
 					
 					if sgMx.has_edge( y, prox ):
+						print "Removendo de M: ("+ y +", "+prox+")"
 						sgMx.remove_edge( y, prox)
 					else:
+						print "Adicionando a M: ("+ y +", "+prox+")"
 						sgMx.add_edge( y, prox)
 					
 					anterior = y
 					atual = prox
+					print "Atual = "+atual
+					print "Prox = "+prox
+					print "Anterior = "+anterior
+					
+					#networkx.to_pydot(arvore).write_gif("arvore.gif")
 					
 					while atual != v.get_name():
 						vizin = arvore.neighbors( atual )
-						
-						if vizin[0] != anterior:
-							prox = vizin[0]
-						else:
-							prox = vizin[1]
+						print vizin
+						for n in vizin:
+							if pesos[n] < pesos[atual]:
+								prox = n
+						#if vizin[0] != anterior:
+							#prox = vizin[0]
+						#else:
+							#prox = vizin[1]
 						
 						if sgMx.has_edge( atual, prox ):
+							print "Removendo de M: ("+ atual +", "+prox+")"
 							sgMx.remove_edge( atual, prox)
 						else:
+							print "Adicionando a M: ("+ atual +", "+prox+")"
 							sgMx.add_edge( atual, prox)
 						
 						anterior = atual
 						atual = prox
+						print "Atual = "+atual
+						print "Prox = "+prox
+						print "Anterior = "+anterior
+						#networkx.to_pydot(arvore).write_gif("arvore.gif")
 					
 					passo = 2
 					
