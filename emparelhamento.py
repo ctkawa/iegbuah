@@ -167,7 +167,7 @@ class Hungaro:
 				for n in S:
 					lista = grafoEmpx.neighbors(n)
 					for n2 in lista:
-						if not NS.__contains__(n2):
+						if n2 not in NS:
 							NS.append(n2)
 							
 				NS.sort()
@@ -179,12 +179,12 @@ class Hungaro:
 				else:
 					
 					# busca um y em NS que não está em T
-					candidatos = NS
-					for n in candidatos:
-						if T.__contains__ ( n ):
-							NS.remove(n)
+					candidatos = []
+					for n in NS:
+						if n not in T:
+							candidatos.append(n)
 					
-					y = NS[0];
+					y = candidatos[0];
 					print "Escolheu "+ y +" entre NS - T: "+ candidatos.__str__()
 					
 					passo = 4
