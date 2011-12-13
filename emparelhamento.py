@@ -53,110 +53,155 @@ class Hungaro:
 		
 		self.grafoEmp = self.grafo
 		
-		## Passo 1 inicializa emparelhamento M
-		print self.getSubGrafoM().get_nodes()
-		self.defineEmparelhamentoInicial()
-		print self.getSubGrafoM().get_nodes()
+		# busca subgrafos
+		lista = self.grafoEmp.get_subgraph_list()
+		for i in lista:
+			if i.get_name() == "X":
+				sgX = i
+			elif i.get_name() == "Y":
+				sgY = i
+			elif i.get_name() == "M":
+				sgM = i
 		
-		## Passo 2 busca vertice de X nao saturado por arestas de M
-		partxM = networkx.from_pydot(partM)
-		partxY = networkx.from_pydot(partY)
-		grafox = networkx.from_pydot(self.grafo)
+		# segue os passo do algoritmo
+		passo = 1
 		
-		i = 0
-		fereTC = False
-		achouMSaturado = False
-		
-		
-		
-		while i < partX.get_nodes().__len__() and not fereTC:
-			v = partX.get_nodes()[i]		# para cada vértice de X
-			if not partxM.has_node( v.get_name() ):   # se é não-saturado
-				arvore = networkx.Graph()
-				arvore.add_node( v.get_name() )
-				#T = []
+		while passo != 0:
+			#
+			# PASSO O1
+			#
+			if passo == 1:
+				print "\tPasso 1"
 				
-				
-				## Passo 3 N (S ) == T -> STOP
-				##y de N (S ) que nao esteja em T
-				while not fereTC and not achouMSaturado:
-					T = []
-					for n in arvore.nodes():
-						if partxY.has_node( n ):
-							T.append( n )
-					T.sort()
+				if sgM.get_edges().__len__() == 0 :
+					print "O conjunto M está vazio"
+					e = self.grafoEmp.get_edges()[0]
+					sgM.add_edge( e )
+					print "O vértice " + self.imprimeVertice(e) + " foi adicionado a M"
 					
-					NS = grafox.neighbors( v.get_name() )
-					NS.sort()
-					if NS == T:
-						print "Este grafo não é emprelhável segundo o Teorema do Casamento"
-						fereTC = True
-					else:
-						# escolhe em NS elementos que não estão em T
-						for i in NS:
-							if T.__contains__( i.get_name() ):
-								NS.remove( i.get_name() )
+				
+				passo = 2
+				
+			#
+			# PASSO O2
+			#
+			elif passo == 2:
+				print "\tPasso 2"
+				
+				# existe algum vértice não saturado?
+				
+				i = 0
+				encontrouNaoSaturado = False
+				sgMx = networkx.from_pydot(sgM)
+				
+				while not encontrouNaoSaturado and i < sgX.get_nodes().__len__():
+					v = sgX.get_nodes()[i]
+					if not sgMx.has_node( v.get_name() ):
+						print "Vértice não-saturado encontrado em X: "+ v.get_name()
+						encontrouNaoSaturado = True
+				
+				if not encontrouNaoSaturado:
+					print "Todos os vértices de X já estão saturados"
+					passo = 0
+				else:
+					arvore = networkx.Graph()
+					arvore.add_node( v.get_name() )
+					passo = 3
+				
+			#
+			# PASSO O3
+			#
+			elif passo == 3:
+				print "\tPasso 3"
+				
+				# verifica se a vizinhança tem o mesmo tamanho de T
+				
+				
+				
+				passo = 4
+			#
+			# PASSO O4
+			#
+			elif passo == 4:
+				print "\tPasso 4"
+				
+				
+				passo = 0
+				
+		
+		
+		### Passo 2 busca vertice de X nao saturado por arestas de M
+		#partxM = networkx.from_pydot(partM)
+		#partxY = networkx.from_pydot(partY)
+		#grafox = networkx.from_pydot(self.grafo)
+		
+		#i = 0
+		#fereTC = False
+		#achouMSaturado = False
+		
+		
+		
+		#while i < partX.get_nodes().__len__() and not fereTC:
+			#v = partX.get_nodes()[i]		# para cada vértice de X
+			#if not partxM.has_node( v.get_name() ):   # se é não-saturado
+				#arvore = networkx.Graph()
+				#arvore.add_node( v.get_name() )
+				##T = []
+				
+				
+				### Passo 3 N (S ) == T -> STOP
+				###y de N (S ) que nao esteja em T
+				#while not fereTC and not achouMSaturado:
+					#T = []
+					#for n in arvore.nodes():
+						#if partxY.has_node( n ):
+							#T.append( n )
+					#T.sort()
+					
+					#NS = grafox.neighbors( v.get_name() )
+					#NS.sort()
+					#if NS == T:
+						#print "Este grafo não é emprelhável segundo o Teorema do Casamento"
+						#fereTC = True
+					#else:
+						## escolhe em NS elementos que não estão em T
+						#for i in NS:
+							#if T.__contains__( i.get_name() ):
+								#NS.remove( i.get_name() )
 						
-						y = NS[0]
+						#y = NS[0]
 						
-						## Passo 4
-						## se y eh saturado, S+= vertice de ligada a y, e T+=y , GOTO Passo 3
-						## senao transferencia de no ate y , GOTO Passo 2
+						### Passo 4
+						### se y eh saturado, S+= vertice de ligada a y, e T+=y , GOTO Passo 3
+						### senao transferencia de no ate y , GOTO Passo 2
 						
-						# se y é m-saturado add yz a arvore
-						if partxM.has_node( y.get_name() ):
-							# um vizinho de y na arvore
-							yvizin = grafox.neighbors( y.get_name() )
-							j = 0
-							#while partxM.neighbors( yvizin )
+						## se y é m-saturado add yz a arvore
+						#if partxM.has_node( y.get_name() ):
+							## um vizinho de y na arvore
+							#yvizin = grafox.neighbors( y.get_name() )
+							#j = 0
+							##while partxM.neighbors( yvizin )
 							
-							# o único vizinho de y em M
-							z = partxM.neighbors( y.get_name() )[0]
-							#S.append(z)
-							#T.append(y)
-						else:
-							# fazer manipulação do caminho M-aumentado
+							## o único vizinho de y em M
+							#z = partxM.neighbors( y.get_name() )[0]
+							##S.append(z)
+							##T.append(y)
+						#else:
+							## fazer manipulação do caminho M-aumentado
 							
 							
-							achouMSaturado = True
-			i+= 1
+							#achouMSaturado = True
+			#i+= 1
 		
 		
 		return
+		
+	def imprimeVertice(self, e):
+		return "("+e.get_source()+", "+e.get_destination()+")"
 		
 	def geraImagemGrafoEmparelhado(self):
 		
 		self.grafoEmp.write_gif('grafoEmparelhado.gif')
-		
-		return
-	
-	def getSubGrafoX(self):
-		lista = self.grafoEmp.get_subgraph_list()
-		for i in lista
-			if lista[i].get_name() == "X":
-				sg = i
-		return sg
-	
-	def getSubGrafoY(self):
-		lista = self.grafoEmp.get_subgraph_list()
-		for i in lista
-			if lista[i].get_name() == "Y":
-				sg = i
-		return sg
-	
-	def getSubGrafoM(self):
-		lista = self.grafoEmp.get_subgraph_list()
-		for i in lista
-			if lista[i].get_name() == "M":
-				sg = i
-		return sg
-	
-	def defineEmparelhamentoInicial(self)
-		
-		sbM = self.getSubGrafoM()
-		
-		if sgM.get_edges().__len__() == 0 :
-			sbM.append( self.grafoEmp.get_edges()[0] )
 		
 		return
 		
