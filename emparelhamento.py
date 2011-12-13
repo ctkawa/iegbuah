@@ -44,7 +44,7 @@ class Hungaro:
 	
 	def geraImagemGrafoInicial(self):
 		self.grafo.write_gif("grafo.gif")
-		self.exportarParaMatrizAdj(self grafo, "matrizAdjDoOriginal")
+		self.exportarParaMatrizAdj(self.grafo, "matrizAdjDoOriginal")
 		return
 	
 	def aplicaHungaro(self): # grafo, X, emparelhamento
@@ -100,7 +100,8 @@ class Hungaro:
 				
 				i = 0
 				encontrouNaoSaturado = False
-				
+				S = []
+				T = []
 				while not encontrouNaoSaturado and i < sgX.get_nodes().__len__():
 					print "loop"
 					v = sgX.get_nodes()[i]
@@ -129,23 +130,24 @@ class Hungaro:
 				
 				# verifica se a vizinhança tem o mesmo tamanho de T
 				
-				#T = arvore.nodes()
+				T = arvore.nodes()
 				
-				#sgXx = networkx.from_pydot(sgX)
+				sgXx = networkx.from_pydot(sgX)
 				#print "arvore noses: "
 				#print arvore.nodes()
 				#print "T:"
 				#print T.__len__()
 				#print T
-				#i = 0
-				#while i < T.__len__()+1:
+				i = T.__len__() - 1;
+				while i >= 0:
 					#print "i"
-					#print i
+					print "T[i] Vale: "
+					print T[i]
 					#print "avaliando " + T[i]
-					#if sgXx.has_node( T[i] ):
+					if sgXx.has_node( T[i] ):
 						#print "removeu" + T[i]
-						#T.remove(T[i])
-					#i += 1
+						T.remove(T[i])
+					i -= 1
 				
 				T.sort()
 				print "T = " + T.__str__()
