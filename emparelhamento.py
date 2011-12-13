@@ -4,6 +4,7 @@ import pydot
 
 
 class Hungaro:
+
 	def texto(self):
 		return "Algoritmo Hungaro"
 	
@@ -282,13 +283,16 @@ class Hungaro:
 				raw_input("4")
 				
 		
-		# adiciona arestas de sgXx em XgX
-		lista = sgMx.edges()
-		for e in lista:
-			sgM.add_edge( pydot.Edge(e[0], e[1]) )
+		# formata arestas de sgXx em grafoEmp
+		#novoM = pydot.Graph()
+		#i = 0;
 		
-		print sgMx.edges()
-		print sgM.get_edge_list()
+		for a in sgMx.edges():
+			e = pydot.Edge(a[0], a[1])
+			e.set_style("dotted")
+			sgM.add_edge( e )
+		
+		#sgM = novoM
 		
 		return
 		
@@ -315,26 +319,6 @@ class Hungaro:
 		return
 	
 	def geraImagemGrafoEmparelhado(self):
-		
-		print "cabou"
-		
-		lista = self.grafoEmp.get_subgraph_list()
-		for s in lista:
-			print s.get_name()
-			for v in s.get_node_list():
-				print "vertice: " + v.get_name()
-			for a in s.get_edge_list():
-				print "aresta: (" + a.get_source() + ", " + a.get_destination() + ") "
-		
-		print "cabou 2"
-		
-		lista = self.grafoEmp.get_subgraph_list()
-		for s in lista:
-			print s.get_name()
-			for v in s.get_node_list():
-				print "vertice: " + v.get_name()
-				for a in s.get_edge_list():
-					print "aresta: (" + a.get_source() + ", " + a.get_destination() + ") "
 		
 		self.grafoEmp.write_gif('grafoEmparelhado.gif')
 		

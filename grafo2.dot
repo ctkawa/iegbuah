@@ -4,14 +4,14 @@ graph G {
 	};
 
 	subgraph Y {
-		E; F; G; H;
+		E; F; H;
 	};
 
 	subgraph M {
 		
 	};
 	
-	A; B; C; E; F; G; H;
-	A--E; B--F; C--F; B--G; C--E; C--H;
+	A; B; C; E; F; H;
+	A--E; B--F; C--F; C--E; C--H;
 	
 }
