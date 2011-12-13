@@ -8,36 +8,33 @@ class Hungaro:
 		return "Algoritmo Hungaro"
 	
 	def lerGrafoDoArquivoMatrizAdjacente(self, caminho):
-		#print "Lendo: "+caminho
-		#arquivo = open(caminho, 'r')
-		#self.grafo = pydot.Dot('Grafo', graph_type='graph' )
-		##obter numero de no em primeira linha
-		#lista = arquivo.readline().split('\t')
-		#no_count = 0
-		#for coluna in range(0,len(lista)):
-			#self.grafo.add_node(pydot.Node(str(coluna)))
-			#if lista[coluna]=="1":
-				#self.grafo.add_edge(pydot.Edge(str(coluna), "1"))
-				#print ' add edge:'+str(coluna)+" - 1"
-				#no_count+=1
-		#print "numero no: "+str(no_count)
-		##loop de toda linha, 2 ate no_count inclusive
-		#for i in range(2, no_count+1):
-			#linha = arquivo.readline()
-			#if linha != "":
-				#lista = linha.split('\t')
-				#j = 1
-				#for cell in lista:
-					#if cell == '1' and j>i:
-						#self.grafo.add_edge( pydot.Edge(str(j+i), str(i)) )
-						#print 'add Edge: ' + str(j+i) + ' - ' + str(i)
-					#j+=1
-			#else:
-				#print "Erro de leitura na Matriz de adjacencia"
-				#break
-		
-		#self.grafo = networkx.Graph()
-		#self.grafo = networkx.read_dot(caminho)
+		print "Lendo matriz adjacente: "+caminho
+		arquivo = open(caminho, 'r')
+		self.grafo = pydot.Dot('Grafo', graph_type='graph' )
+		#obter numero de no em primeira linha
+		lista = arquivo.readline().split('\t')
+		no_count = 0
+		for coluna in range(0,len(lista)):
+			self.grafo.add_node(pydot.Node(str(coluna)))
+			if lista[coluna]=="1":
+				self.grafo.add_edge(pydot.Edge(str(coluna), "1"))
+				print ' add edge:'+str(coluna)+" - 1"
+				no_count+=1
+		print "numero no: "+str(no_count)
+		#loop de toda linha, 2 ate no_count inclusive
+		for i in range(2, no_count+1):
+			linha = arquivo.readline()
+			if linha != "":
+				lista = linha.split('\t')
+				j = 1
+				for cell in lista:
+					if cell == '1' and j>i:
+						self.grafo.add_edge( pydot.Edge(str(j+i), str(i)) )
+						print 'add Edge: ' + str(j+i) + ' - ' + str(i)
+					j+=1
+			else:
+				print "Erro de leitura na Matriz de adjacencia"
+				break
 		return
 	
 	def lerGrafoDoArquivoDot(self, caminho):
@@ -47,6 +44,7 @@ class Hungaro:
 	
 	def geraImagemGrafoInicial(self):
 		self.grafo.write_gif("grafo.gif")
+		self.exportarParaMatrizAdj(self grafo, "matrizAdjDoOriginal")
 		return
 	
 	def aplicaHungaro(self): # grafo, X, emparelhamento
@@ -245,4 +243,27 @@ class Hungaro:
 		for aresta in arestas:
 			self.grafo.add_edge(str(aresta))
 		return self.grafo
+		
 	
+	def exportarParaMatrizAdj(self, grafoDot, nome):
+		print('criando arquivo com matriz de adjacencia: '+nome+'.txt')
+		arquivo = open(str(nome)+'.txt', 'w')
+		grafox = networkx.from_pydot(grafoDot)
+		listaNo = grafox.nodes()
+		for i in range(0, len(listaNo)):
+			vizinhos = grafox.neighbors(listaNo[i])
+			linha = ""
+			for j in range(0, len(listaNo)):
+				if listaNo[j] in vizinhos:
+					linha+="1\t"
+					print listaNo[i]+"("+str(i)+") -- " + listaNo[j]+"("+str(j)+")"
+				else:
+					linha+="0\t"
+			linha = linha[0:-1]+"\n"
+			arquivo.write(linha)
+
+
+
+
+
+

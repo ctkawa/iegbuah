@@ -73,6 +73,16 @@ class Main:
 		ltitulo = Tkinter.Label(f, text="IEGBUAH")
 		ltitulo.pack()
 		
+
+		action = 0
+		radioMtzAdj = Tkinter.Radiobutton(f, text = 'Matriz de Adcacencia', variable = action, value = 0)
+		radioMtzAdj.select()
+		radioMtzAdj.pack()
+		Tkinter.Radiobutton(f, text = 'Dot', variable = action, value = 1).pack()
+		Tkinter.Radiobutton(f, text = 'action C', variable = action, value = 2).pack()
+		bopen = Tkinter.Button(f, text="Abrir", command = self.janela.destroy )
+		bopen.pack()
+		
 		
 		# pede o endereço da imagem
 		self.emparelhar()
