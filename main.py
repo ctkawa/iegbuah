@@ -75,7 +75,7 @@ class Main:
 		
 		
 		# pede o endereço da imagem
-		self.abrirArquivoMatrizAdjacente()
+		self.emparelhar()
 
 		# mostra o grafo
 		
@@ -123,23 +123,30 @@ class Main:
 		bnext = Tkinter.Button(f, text="Terminar", command = self.telaFinal )
 		bnext.pack()
 		
-		
 		return
 	
 	
-	def abrirArquivoMatrizAdjacente(self):
+	def emparelhar(self):
 		
-		filename = tkFileDialog.askopenfilename()
+		
+		#filename = tkFileDialog.askopenfilename()
 		
 		print "Abrindo..."
 		
 		#filename = tkFileDialog.askopenfilename(filetypes = [('Text Files', ('.txt', '.py'))], initialdir = "~")
 		#filename = tkFileDialog.askopenfilename()
 		#filename = "/home/cleber/Documents/UFSCar/TG/projeto_final/MatrizAdjacencia.txt"
-		filename = "MatrizAdjacencia.txt"
+		filename = "grafo2.dot"
 		if filename != "":
-			self.hungaro.lerGrafoDoArquivoMatrizAdjacente(filename)
+			#self.hungaro.lerGrafoDoArquivoMatrizAdjacente(filename)
+			self.hungaro.lerGrafoDoArquivoDot(filename)
 		#exit()
+		
+		self.hungaro.geraImagemGrafoInicial()
+		self.hungaro.aplicaHungaro()
+		self.hungaro.geraImagemGrafoEmparelhado()
+		
 		return
+
 
 m = Main()
