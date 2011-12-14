@@ -478,8 +478,6 @@ class Hungaro:
 		novoGrafo = pydot.Dot(graph_type='graph')
 		for vertice in self.grafo.get_node_list():
 			novoGrafo.add_node(vertice)
-		for aresta in self.grafo.get_edge_list():
-			novoGrafo.add_edge(aresta)
 		for subg in self.grafo.get_subgraph_list():
 			if subg.get_name()!='M':
 				subg.set_rank('same')
@@ -489,8 +487,7 @@ class Hungaro:
 		subM.set_name('M')
 		novoGrafo.add_subgraph(subM)
 		
-		self.grafo = novoGrafo
-		print self.grafo.to_string()
+		
 					
 		verticeVizinho = []
 		fim=False
@@ -519,6 +516,12 @@ class Hungaro:
 				else:
 					print "nao existe tal aresta"
 			print ""
+			
+		subMx = networkx.from_pydot(subM)
+		for aresta in grafox.edges():
+			if aresta not in subMx.edges():
+				novoGrafo.add_edge(pydot.Edge(aresta[0], aresta[1]))
+		self.grafo = novoGrafo
 		print self.grafo.to_string()
 		return
 
