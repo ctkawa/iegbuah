@@ -509,7 +509,7 @@ class Hungaro:
 				alvo = raw_input(">> ")
 				if (fonte,alvo) in grafox.edges():
 					if fonte not in verticeVizinho and alvo not in verticeVizinho:
-						self.grafo.del_edge(pydot.Edge(fonte, alvo))
+						#self.grafo.del_edge(pydot.Edge(fonte, alvo))
 						subM.add_edge(pydot.Edge(fonte, alvo))
 						verticeVizinho.append(fonte)
 						verticeVizinho.append(alvo)
@@ -519,7 +519,6 @@ class Hungaro:
 				else:
 					print "nao existe tal aresta"
 			print ""
-		
 		print self.grafo.to_string()
 		return
 
