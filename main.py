@@ -193,9 +193,11 @@ class Main:
 		#exit()
 		
 		self.hungaro.geraImagemGrafoInicial()
+		print("imagem do grafo inicial gerada.")
 		self.hungaro.aplicaHungaro()
 		self.hungaro.geraImagemGrafoEmparelhado()
-		
+		print("imagem do grafo resultante gerada.")
+		self.exportarParaMatrizAdj(self.grafo, "matrizAdjResultado.txt")
 		return
 
 

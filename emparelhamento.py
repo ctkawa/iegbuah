@@ -2,6 +2,10 @@
 import networkx
 import pydot
 
+#O pydot esta sendo utilizado para manipular o subgrafo representado em DOT
+#O networkx esta sendo usado para manipulacao geral sobre o grafo
+
+
 
 class Hungaro:
 
@@ -36,6 +40,7 @@ class Hungaro:
 			else:
 				print "Erro de leitura na Matriz de adjacencia"
 				break
+		self.criarParticao()
 		return
 	
 	def lerGrafoDoArquivoDot(self, caminho):
@@ -45,7 +50,6 @@ class Hungaro:
 	
 	def geraImagemGrafoInicial(self):
 		self.grafo.write_gif("grafo.gif")
-		self.exportarParaMatrizAdj(self.grafo, "matrizAdjDoOriginal")
 		return
 	
 	def aplicaHungaro(self): # grafo, X, emparelhamento
@@ -138,13 +142,16 @@ class Hungaro:
 				
 				# verifica se a vizinhança tem o mesmo tamanho de T
 				
+
+
 				T = arvore.nodes()
 				
 				sgXx = networkx.from_pydot(sgX)
 				#print "arvore noses: "
 				#print arvore.nodes()
 				#print "T:"
-				#print T.__len__()
+				#maximo = T.__len__()
+				#print maximo
 				#print T
 				i = T.__len__() - 1;
 				while i >= 0:
@@ -157,8 +164,11 @@ class Hungaro:
 						T.remove(T[i])
 					i -= 1
 				
-				T.sort()
-				print "T = " + T.__str__()
+				print "T:"
+				print T
+				
+				#T.sort()
+				#print "T = " + T.__str__()
 				
 				#S = arvore.nodes()
 				#for n in T:
@@ -371,6 +381,7 @@ class Hungaro:
 		print('criando arquivo com matriz de adjacencia: '+nome+'.txt')
 		arquivo = open(str(nome)+'.txt', 'w')
 		grafox = networkx.from_pydot(grafoDot)
+		grafox = grafox.to_undirected()
 		listaNo = grafox.nodes()
 		for i in range(0, len(listaNo)):
 			vizinhos = grafox.neighbors(listaNo[i])
@@ -383,6 +394,55 @@ class Hungaro:
 					linha+="0\t"
 			linha = linha[0:-1]+"\n"
 			arquivo.write(linha)
+
+	def criarParticao(self):
+		listaSubg = self.grafo.get_subgraph_list()
+		temM=False
+		for subg in listaSubg:
+			if subg.get_name=='X' or subg.get_name=='Y':
+				return
+			if subg.get_name=='M':
+				temM = True
+		grafox = networkx.from_pydot(self.grafo)
+		listaNo = grafox.nodes()
+		X=[listaNo[0]]
+		Y=[]
+		for i in range(0,len(listaNo)):
+			vizinhos = grafox.neighbors(listaNo[i])
+			for j in vizinhos:
+				if i in X and i not in Y:
+					Y.append(j)
+				elif i not in X:
+					X.append(j)
+		subX = pydot.subgraph(graph_name='X', directed=False)
+		for no in X:
+			subX.add_node(no)
+		subY = pydot.subgraph(graph_name='Y', directed=False)
+		for no in Y:
+			subY.add_node(no)
+		self.grafo.add_subgraph(subX)
+		self.grafo.add_subgraph(subY)
+		
+		subM = pydot.subgraph(graph_name='M', directed=False)
+		if len(self.grafo.get_edge_list())>0:
+			subM.add_edge(self.grafo.get_edge_list()[0])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
