@@ -36,8 +36,8 @@ class Hungaro:
 			self.grafo.add_node(pydot.Node(listaNome[coluna]))
 			no_count+=1
 			if lista[coluna]=="1":
-				self.grafo.add_edge(pydot.Edge(listaNome[coluna], listaNome[1]))
-				#print ' add edge:'+str(coluna)+" - 1"
+				self.grafo.add_edge(pydot.Edge(listaNome[coluna], listaNome[0]))
+				#print ' add edge:'+listaNome[coluna]+" - "+listaNome[0]
 				aresta_count+=1
 		print "numero no: "+str(no_count)
 		#loop de toda linha, 2 ate no_count inclusive
