@@ -58,10 +58,10 @@ class Hungaro:
 		print("numero aresta: "+str(aresta_count))
 		
 		
-		subX = pydot.Subgraph(graph_name='X', directed=False)
-		subX.set_type('graph')
-		subY = pydot.Subgraph(graph_name='Y', directed=False)
-		subY.set_type('graph')
+		subX = pydot.Subgraph('', rank='same')
+		subX.set_name('X')
+		subY = pydot.Subgraph('', rank='same')
+		subY.set_name('Y')
 		for nome in listaNome:
 			if nome.isdigit():
 				subY.add_node(pydot.Node(nome))
@@ -69,13 +69,15 @@ class Hungaro:
 				subX.add_node(pydot.Node(nome))
 		self.grafo.add_subgraph(subX)
 		self.grafo.add_subgraph(subY)
-		subM = pydot.Subgraph(graph_name='M', directed=False)
+		subM = pydot.Subgraph()
+		subM.set_name('M')
 		if len(self.grafo.get_edge_list())>0:
 			subM.add_edge(self.grafo.get_edge_list()[0])
 		self.grafo.add_subgraph(subM)
 		
 		print("Matriz lida")
-		networkx.write_dot(self.grafo,'file.dot')
+		
+		print self.grafo.to_string()
 
 		return
 	
