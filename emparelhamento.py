@@ -29,7 +29,8 @@ class Hungaro:
 		arquivoMatriz = open(caminhoMatriz, 'r')
 		self.grafo = pydot.Dot('Grafo', graph_type='graph' )
 		#obter numero de no em primeira linha
-		lista = arquivoMatriz.readline().split('\t')
+		
+		lista = arquivoMatriz.readline().split('\n')[0].split('\t')
 		no_count = 0
 		aresta_count = 0
 		for coluna in range(0,len(lista)):
@@ -41,11 +42,11 @@ class Hungaro:
 				aresta_count+=1
 		print "numero no: "+str(no_count)
 		#loop de toda linha, 2 ate no_count inclusive
-		for i in range(2, no_count+1):
+		for i in range(1, no_count):
 			linha = arquivoMatriz.readline()
 			if linha != "":
-				lista = linha.split('\t')
-				j = 1
+				lista = linha.split('\n')[0].split('\t')
+				j = 0
 				for cell in lista:
 					if cell == '1' and j>i:
 						self.grafo.add_edge( pydot.Edge(listaNome[j], listaNome[i]) )
@@ -91,7 +92,6 @@ class Hungaro:
 	
 	def geraImagemGrafoInicial(self):
 		self.grafo.write_gif("grafo.gif")
-		self.grafo.write_svg("grafo.svg")
 		return
 	
 	def aplicaHungaro(self): # grafo, X, emparelhamento
@@ -189,34 +189,16 @@ class Hungaro:
 				T = arvore.nodes()
 				
 				sgXx = networkx.from_pydot(sgX)
-				#print "arvore noses: "
-				#print arvore.nodes()
-				#print "T:"
-				#maximo = T.__len__()
-				#print maximo
-				#print T
 				i = T.__len__() - 1;
 				while i >= 0:
-					#print "i"
 					print "T[i] Vale: "
 					print T[i]
-					#print "avaliando " + T[i]
 					if sgXx.has_node( T[i] ):
-						#print "removeu" + T[i]
 						T.remove(T[i])
 					i -= 1
 				
 				print "T:"
-				print T
-				
-				#T.sort()
-				#print "T = " + T.__str__()
-				
-				#S = arvore.nodes()
-				#for n in T:
-					#if not sgXx.has_node( n ):
-						#S.remove(n)
-				
+				print T				
 				S.sort()
 				print "S = " + S.__str__()
 				
@@ -273,11 +255,6 @@ class Hungaro:
 							pesos[y] = pesos[lista[i]] + 1
 						i +=1
 					
-					#vizin = sgMx.neighbors( y )
-					#for n in sgMx.predecessors( y ):
-					#	if not vizin.__contains__(n):
-					#		vizin.append(n)
-					#z = vizin[0]
 					z = sgMx.neighbors( y )[0]
 						
 					arvore.add_edge( y, z )
@@ -321,18 +298,12 @@ class Hungaro:
 					print "Prox = "+prox
 					print "Anterior = "+anterior
 					
-					#networkx.to_pydot(arvore).write_gif("arvore.gif")
-					
 					while atual != v.get_name():
 						vizin = arvore.neighbors( atual )
 						print vizin
 						for n in vizin:
 							if pesos[n] < pesos[atual]:
 								prox = n
-						#if vizin[0] != anterior:
-							#prox = vizin[0]
-						#else:
-							#prox = vizin[1]
 						
 						if sgMx.has_edge( atual, prox ):
 							print "Removendo de M: ("+ atual +", "+prox+")"
@@ -346,7 +317,6 @@ class Hungaro:
 						print "Atual = "+atual
 						print "Prox = "+prox
 						print "Anterior = "+anterior
-						#networkx.to_pydot(arvore).write_gif("arvore.gif")
 					
 					passo = 2
 					
@@ -368,8 +338,6 @@ class Hungaro:
 		for e in lista:
 			if sgMx.has_edge( e.get_source(), e.get_destination() ):
 				e.set_style("dotted")
-		
-		#sgM = novoM
 		
 		return
 		
@@ -403,21 +371,6 @@ class Hungaro:
 		
 		return
 		
-	#recebe listas de no e aresta
-	#def lerGrafoBipartidoDaLista(self, particaoX, particaoY, arestas):
-		#self.grafo = pydot.Dot(graph_type='graph')
-		#subX = pydot.subgraph('X')
-		#subY = pydot.subgraph('Y')
-		#for no in particaoX:
-			#subX.add_node(str(no))
-		#for no in particaoY:
-			#subY.add_node(str(no))
-		#self.grafo.add_subgraph(subX)
-		#self.grafo.add_subgraph(subY)
-		#for aresta in arestas:
-			#self.grafo.add_edge(str(aresta))
-		#return self.grafo
-		
 	
 	def exportarParaMatrizAdj(self, nome):
 		print('criando arquivo com matriz de adjacencia: '+nome+'.txt')
@@ -437,38 +390,7 @@ class Hungaro:
 			linha = linha[0:-1]+"\n"
 			arquivo.write(linha)
 
-	#def criarParticao(self):
-		#listaSubg = self.grafo.get_subgraph_list()
-		#temM=False
-		#for subg in listaSubg:
-			#if subg.get_name=='X' or subg.get_name=='Y':
-				#return
-			#if subg.get_name=='M':
-				#temM = True
-		#grafox = networkx.from_pydot(self.grafo)
-		#listaNo = grafox.nodes()
-		#X=[listaNo[0]]
-		#Y=[]
-		#for i in range(0,len(listaNo)):
-			#vizinhos = grafox.neighbors(listaNo[i])
-			#for j in vizinhos:
-				#if i in X and i not in Y:
-					#Y.append(j)
-				#elif i not in X:
-					#X.append(j)
-		#subX = pydot.subgraph(graph_name='X', directed=False)
-		#for no in X:
-			#subX.add_node(no)
-		#subY = pydot.subgraph(graph_name='Y', directed=False)
-		#for no in Y:
-			#subY.add_node(no)
-		#self.grafo.add_subgraph(subX)
-		#self.grafo.add_subgraph(subY)
-		
-		#subM = pydot.Subgraph(graph_name='M', directed=False)
-		#if len(self.grafo.get_edge_list())>0:
-			#subM.add_edge(self.grafo.get_edge_list()[0])
-
+	
 
 
 	def escolherEmparelhamento(self):
@@ -491,7 +413,7 @@ class Hungaro:
 		verticeVizinho = []
 		fim=False
 		while not fim:
-			print "digite o nome do no fonte, nada para listar arestas, ou fim para terminar"
+			print "digite o nome do vertice fonte, nada para listar arestas, ou fim para terminar"
 			fonte = raw_input(">> ")
 			if fonte=='':
 				for aresta in self.grafo.get_edge_list():
@@ -505,7 +427,6 @@ class Hungaro:
 				alvo = raw_input(">> ")
 				if (fonte,alvo) in grafox.edges():
 					if fonte not in verticeVizinho and alvo not in verticeVizinho:
-						#self.grafo.del_edge(pydot.Edge(fonte, alvo))
 						subM.add_edge(pydot.Edge(fonte, alvo))
 						verticeVizinho.append(fonte)
 						verticeVizinho.append(alvo)
@@ -518,10 +439,9 @@ class Hungaro:
 			
 		subMx = networkx.from_pydot(subM)
 		for aresta in grafox.edges():
-			if aresta not in subMx.edges():
+			#if aresta not in subMx.edges():
 				novaAresta = pydot.Edge(aresta[0], aresta[1])
 				novoGrafo.add_edge(novaAresta)
-				#novaAresta.set_style = "dotted"
 		self.grafo = novoGrafo
 		print self.grafo.to_string()
 		return
