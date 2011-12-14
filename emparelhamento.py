@@ -191,8 +191,6 @@ class Hungaro:
 				sgXx = networkx.from_pydot(sgX)
 				i = T.__len__() - 1;
 				while i >= 0:
-					print "T[i] Vale: "
-					print T[i]
 					if sgXx.has_node( T[i] ):
 						T.remove(T[i])
 					i -= 1
@@ -213,7 +211,7 @@ class Hungaro:
 				NS.sort()
 				print "NS = " + NS.__str__()
 				
-				if NS == T:
+				if NS.__len__() == T.__len__():
 					print "PROBLEMA: O algoritmo não satisfaz o Teorema do Casamento"
 					passo = 0
 				else:
