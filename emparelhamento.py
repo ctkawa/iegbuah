@@ -12,35 +12,71 @@ class Hungaro:
 	def texto(self):
 		return "Algoritmo Hungaro"
 	
-	def lerGrafoDoArquivoMatrizAdjacente(self, caminho):
-		print "Lendo matriz adjacente: "+caminho
-		arquivo = open(caminho, 'r')
+	def lerGrafoDoArquivoMatrizAdjacente(self, caminhoMatriz, caminhoLista):
+		print "Lendo matriz adjacente: "+caminhoMatriz
+		
+		arquivoLista = open(caminhoLista, 'r')
+		listaNome = []
+		i=1
+		while True:
+			nome = arquivoLista.readline()
+			if nome=='':
+				break
+			listaNome.append(nome.strip())
+			i+=1
+		print("listaNome.len: "+str(len(listaNome)))
+		
+		arquivoMatriz = open(caminhoMatriz, 'r')
 		self.grafo = pydot.Dot('Grafo', graph_type='graph' )
 		#obter numero de no em primeira linha
-		lista = arquivo.readline().split('\t')
+		lista = arquivoMatriz.readline().split('\t')
 		no_count = 0
+		aresta_count = 0
 		for coluna in range(0,len(lista)):
-			self.grafo.add_node(pydot.Node(str(coluna)))
+			self.grafo.add_node(pydot.Node(listaNome[coluna]))
+			no_count+=1
 			if lista[coluna]=="1":
-				self.grafo.add_edge(pydot.Edge(str(coluna), "1"))
-				print ' add edge:'+str(coluna)+" - 1"
-				no_count+=1
+				self.grafo.add_edge(pydot.Edge(listaNome[coluna], listaNome[1]))
+				#print ' add edge:'+str(coluna)+" - 1"
+				aresta_count+=1
 		print "numero no: "+str(no_count)
 		#loop de toda linha, 2 ate no_count inclusive
 		for i in range(2, no_count+1):
-			linha = arquivo.readline()
+			linha = arquivoMatriz.readline()
 			if linha != "":
 				lista = linha.split('\t')
 				j = 1
 				for cell in lista:
 					if cell == '1' and j>i:
-						self.grafo.add_edge( pydot.Edge(str(j+i), str(i)) )
-						print 'add Edge: ' + str(j+i) + ' - ' + str(i)
+						self.grafo.add_edge( pydot.Edge(listaNome[j], listaNome[i]) )
+						#print 'add Edge: ' + str(j+i) + ' - ' + str(i)
+						aresta_count+=1
 					j+=1
 			else:
 				print "Erro de leitura na Matriz de adjacencia"
 				break
-		self.criarParticao()
+		print("numero aresta: "+str(aresta_count))
+		
+		
+		subX = pydot.Subgraph(graph_name='X', directed=False)
+		subX.set_type('graph')
+		subY = pydot.Subgraph(graph_name='Y', directed=False)
+		subY.set_type('graph')
+		for nome in listaNome:
+			if nome.isdigit():
+				subY.add_node(pydot.Node(nome))
+			else:
+				subX.add_node(pydot.Node(nome))
+		self.grafo.add_subgraph(subX)
+		self.grafo.add_subgraph(subY)
+		subM = pydot.Subgraph(graph_name='M', directed=False)
+		if len(self.grafo.get_edge_list())>0:
+			subM.add_edge(self.grafo.get_edge_list()[0])
+		self.grafo.add_subgraph(subM)
+		
+		print("Matriz lida")
+		networkx.write_dot(self.grafo,'file.dot')
+
 		return
 	
 	def lerGrafoDoArquivoDot(self, caminho):

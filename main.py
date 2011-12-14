@@ -175,7 +175,7 @@ class Main:
 			tipo = raw_input(">> ")
 			
 			if tipo == '1':
-				self.hungaro.lerGrafoDoArquivoMatrizAdjacente("MatrizAdjacencia.txt")
+				self.hungaro.lerGrafoDoArquivoMatrizAdjacente("MatrizAdjacencia.txt", "Vertex_Names.txt")
 				tipoEscolhido = True
 			elif tipo == '2':
 				self.hungaro.lerGrafoDoArquivoDot("grafo2.dot")
