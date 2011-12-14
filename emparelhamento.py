@@ -480,7 +480,6 @@ class Hungaro:
 			novoGrafo.add_node(vertice)
 		for subg in self.grafo.get_subgraph_list():
 			if subg.get_name()!='M':
-				subg.set_rank('same')
 				novoGrafo.add_subgraph(subg)
 				subg.set_rank('same')
 		subM = pydot.Subgraph('')
@@ -520,7 +519,9 @@ class Hungaro:
 		subMx = networkx.from_pydot(subM)
 		for aresta in grafox.edges():
 			if aresta not in subMx.edges():
-				novoGrafo.add_edge(pydot.Edge(aresta[0], aresta[1]))
+				novaAresta = pydot.Edge(aresta[0], aresta[1])
+				novoGrafo.add_edge(novaAresta)
+				#novaAresta.set_style = "dotted"
 		self.grafo = novoGrafo
 		print self.grafo.to_string()
 		return
