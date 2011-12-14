@@ -58,9 +58,9 @@ class Hungaro:
 		print("numero aresta: "+str(aresta_count))
 		
 		
-		subX = pydot.Subgraph('', rank='same', margin='10')
+		subX = pydot.Subgraph('', rank='same')
 		subX.set_name('X')
-		subY = pydot.Subgraph('', rank='same', margin='10')
+		subY = pydot.Subgraph('', rank='same')
 		subY.set_name('Y')
 		for nome in listaNome:
 			if nome.isdigit():
@@ -404,19 +404,19 @@ class Hungaro:
 		return
 		
 	#recebe listas de no e aresta
-	def lerGrafoBipartidoDaLista(self, particaoX, particaoY, arestas):
-		self.grafo = pydot.Dot(graph_type='graph')
-		subX = pydot.subgraph('X')
-		subY = pydot.subgraph('Y')
-		for no in particaoX:
-			subX.add_node(str(no))
-		for no in particaoY:
-			subY.add_node(str(no))
-		self.grafo.add_subgraph(subX)
-		self.grafo.add_subgraph(subY)
-		for aresta in arestas:
-			self.grafo.add_edge(str(aresta))
-		return self.grafo
+	#def lerGrafoBipartidoDaLista(self, particaoX, particaoY, arestas):
+		#self.grafo = pydot.Dot(graph_type='graph')
+		#subX = pydot.subgraph('X')
+		#subY = pydot.subgraph('Y')
+		#for no in particaoX:
+			#subX.add_node(str(no))
+		#for no in particaoY:
+			#subY.add_node(str(no))
+		#self.grafo.add_subgraph(subX)
+		#self.grafo.add_subgraph(subY)
+		#for aresta in arestas:
+			#self.grafo.add_edge(str(aresta))
+		#return self.grafo
 		
 	
 	def exportarParaMatrizAdj(self, nome):
@@ -437,52 +437,61 @@ class Hungaro:
 			linha = linha[0:-1]+"\n"
 			arquivo.write(linha)
 
-	def criarParticao(self):
-		listaSubg = self.grafo.get_subgraph_list()
-		temM=False
-		for subg in listaSubg:
-			if subg.get_name=='X' or subg.get_name=='Y':
-				return
-			if subg.get_name=='M':
-				temM = True
-		grafox = networkx.from_pydot(self.grafo)
-		listaNo = grafox.nodes()
-		X=[listaNo[0]]
-		Y=[]
-		for i in range(0,len(listaNo)):
-			vizinhos = grafox.neighbors(listaNo[i])
-			for j in vizinhos:
-				if i in X and i not in Y:
-					Y.append(j)
-				elif i not in X:
-					X.append(j)
-		subX = pydot.subgraph(graph_name='X', directed=False)
-		for no in X:
-			subX.add_node(no)
-		subY = pydot.subgraph(graph_name='Y', directed=False)
-		for no in Y:
-			subY.add_node(no)
-		self.grafo.add_subgraph(subX)
-		self.grafo.add_subgraph(subY)
+	#def criarParticao(self):
+		#listaSubg = self.grafo.get_subgraph_list()
+		#temM=False
+		#for subg in listaSubg:
+			#if subg.get_name=='X' or subg.get_name=='Y':
+				#return
+			#if subg.get_name=='M':
+				#temM = True
+		#grafox = networkx.from_pydot(self.grafo)
+		#listaNo = grafox.nodes()
+		#X=[listaNo[0]]
+		#Y=[]
+		#for i in range(0,len(listaNo)):
+			#vizinhos = grafox.neighbors(listaNo[i])
+			#for j in vizinhos:
+				#if i in X and i not in Y:
+					#Y.append(j)
+				#elif i not in X:
+					#X.append(j)
+		#subX = pydot.subgraph(graph_name='X', directed=False)
+		#for no in X:
+			#subX.add_node(no)
+		#subY = pydot.subgraph(graph_name='Y', directed=False)
+		#for no in Y:
+			#subY.add_node(no)
+		#self.grafo.add_subgraph(subX)
+		#self.grafo.add_subgraph(subY)
 		
-		subM = pydot.Subgraph(graph_name='M', directed=False)
-		if len(self.grafo.get_edge_list())>0:
-			subM.add_edge(self.grafo.get_edge_list()[0])
+		#subM = pydot.Subgraph(graph_name='M', directed=False)
+		#if len(self.grafo.get_edge_list())>0:
+			#subM.add_edge(self.grafo.get_edge_list()[0])
 
 
 
 	def escolherEmparelhamento(self):
 		grafox = networkx.from_pydot(self.grafo)
 		temM=False
-		subM = pydot.Subgraph(graph_name='M', directed=False)
+		
+		novoGrafo = pydot.Dot(graph_type='graph')
+		for vertice in self.grafo.get_node_list():
+			novoGrafo.add_node(vertice)
+		for aresta in self.grafo.get_edge_list():
+			novoGrafo.add_edge(aresta)
 		for subg in self.grafo.get_subgraph_list():
-			print "subg:"+subg.get_name()
-			if subg.get_name()=='M':
-				subM = subg
-				print "Leu subgrafo"
-				for no in subM.get_node_list():
-					subM.remove_node(no)
-					print "removendo"+no
+			if subg.get_name()!='M':
+				subg.set_rank('same')
+				novoGrafo.add_subgraph(subg)
+				subg.set_rank('same')
+		subM = pydot.Subgraph('')
+		subM.set_name('M')
+		novoGrafo.add_subgraph(subM)
+		
+		self.grafo = novoGrafo
+		print self.grafo.to_string()
+					
 		verticeVizinho = []
 		fim=False
 		while not fim:
@@ -500,12 +509,15 @@ class Hungaro:
 				alvo = raw_input(">> ")
 				if (fonte,alvo) in grafox.edges():
 					if fonte not in verticeVizinho and alvo not in verticeVizinho:
+						self.grafo.del_edge(pydot.Edge(fonte, alvo))
 						subM.add_edge(pydot.Edge(fonte, alvo))
 						verticeVizinho.append(fonte)
 						verticeVizinho.append(alvo)
 						print " inserido:("+str(fonte)+", "+str(alvo)+") em M"
+					else:
+						print "aresta invalido, M deve conter arestas com vertice em comum"
 				else:
-					print "no invalido"
+					print "nao existe tal aresta"
 			print ""
 		
 		print self.grafo.to_string()

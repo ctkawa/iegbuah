@@ -170,6 +170,7 @@ class Main:
 			print "\t[1] Matriz de Adjacência"
 			print "\t[2] Descrição em Linguagem Dot"
 			print "\t[3] Matriz de Adjacência, escolher arestas"
+			print "\t[4] Descrição em Linguagem Dot, escolher arestas"
 			
 			print "\n"
 			
@@ -183,6 +184,10 @@ class Main:
 				tipoEscolhido = True
 			elif tipo == '3':
 				self.hungaro.lerGrafoDoArquivoMatrizAdjacente("MatrizAdjacencia.txt", "vn.txt")
+				self.hungaro.escolherEmparelhamento()
+				tipoEscolhido = True
+			elif tipo == '4':
+				self.hungaro.lerGrafoDoArquivoDot("grafo2.dot")
 				self.hungaro.escolherEmparelhamento()
 				tipoEscolhido = True
 		
