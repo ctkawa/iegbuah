@@ -311,13 +311,11 @@ class Hungaro:
 				
 		
 		# formata arestas de sgXx em grafoEmp
-		#novoM = pydot.Graph()
-		#i = 0;
 		
-		for a in sgMx.edges():
-			e = pydot.Edge(a[0], a[1])
-			e.set_style("dotted")
-			sgM.add_edge( e )
+		lista = self.grafoEmp.get_edges()
+		for e in lista:
+			if sgMx.has_edge( e.get_source(), e.get_destination() ):
+				e.set_style("dotted")
 		
 		#sgM = novoM
 		
@@ -346,6 +344,8 @@ class Hungaro:
 		return
 	
 	def geraImagemGrafoEmparelhado(self):
+		
+		
 		
 		self.grafoEmp.write_gif('grafoEmparelhado.gif')
 		

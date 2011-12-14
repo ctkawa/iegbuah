@@ -8,10 +8,10 @@ graph G {
 	};
 
 	subgraph M {
-		
+		A--F; C--E;
 	};
 	
 	A; B; C; E; F; H;
-	A--E; B--F; C--F; C--E; C--H;
+	A--E; B--F; C--F; C--H;
 	
 }
