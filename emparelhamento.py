@@ -465,11 +465,51 @@ class Hungaro:
 		self.grafo.add_subgraph(subX)
 		self.grafo.add_subgraph(subY)
 		
-		subM = pydot.subgraph(graph_name='M', directed=False)
+		subM = pydot.Subgraph(graph_name='M', directed=False)
 		if len(self.grafo.get_edge_list())>0:
 			subM.add_edge(self.grafo.get_edge_list()[0])
 
 
+
+	def escolherEmparelhamento(self):
+		grafox = networkx.from_pydot(self.grafo)
+		temM=False
+		subM = pydot.Subgraph(graph_name='M', directed=False)
+		for subg in self.grafo.get_subgraph_list():
+			print "subg:"+subg.get_name()
+			if subg.get_name()=='M':
+				subM = subg
+				print "Leu subgrafo"
+				for no in subM.get_node_list():
+					subM.remove_node(no)
+					print "removendo"+no
+		verticeVizinho = []
+		fim=False
+		while not fim:
+			print "digite o nome do no fonte, nada para listar arestas, ou fim para terminar"
+			fonte = raw_input(">> ")
+			if fonte=='':
+				for aresta in self.grafo.get_edge_list():
+					print " aresta:("+str(aresta.get_source())+", "+str(aresta.get_destination())+")"
+				for aresta in subM.get_edge_list():
+					print " M:("+str(aresta.get_source())+", "+str(aresta.get_destination())+")"
+			elif fonte == 'fim':
+				fim = True
+			else:
+				print "digite o no alvo"
+				alvo = raw_input(">> ")
+				if (fonte,alvo) in grafox.edges():
+					if fonte not in verticeVizinho and alvo not in verticeVizinho:
+						subM.add_edge(pydot.Edge(fonte, alvo))
+						verticeVizinho.append(fonte)
+						verticeVizinho.append(alvo)
+						print " inserido:("+str(fonte)+", "+str(alvo)+") em M"
+				else:
+					print "no invalido"
+			print ""
+		
+		print self.grafo.to_string()
+		return
 
 
 
