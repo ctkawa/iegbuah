@@ -58,9 +58,9 @@ class Hungaro:
 		print("numero aresta: "+str(aresta_count))
 		
 		
-		subX = pydot.Subgraph('', rank='same')
+		subX = pydot.Subgraph('', rank='same', margin='10')
 		subX.set_name('X')
-		subY = pydot.Subgraph('', rank='same')
+		subY = pydot.Subgraph('', rank='same', margin='10')
 		subY.set_name('Y')
 		for nome in listaNome:
 			if nome.isdigit():
@@ -77,7 +77,10 @@ class Hungaro:
 		
 		print("Matriz lida")
 		
-		print self.grafo.to_string()
+		#print self.grafo.to_string()
+		f = open('DOT_original.dot', 'w')
+		f.write(self.grafo.to_string())
+		f.close()
 
 		return
 	
@@ -88,6 +91,7 @@ class Hungaro:
 	
 	def geraImagemGrafoInicial(self):
 		self.grafo.write_gif("grafo.gif")
+		self.grafo.write_svg("grafo.svg")
 		return
 	
 	def aplicaHungaro(self): # grafo, X, emparelhamento
@@ -415,10 +419,10 @@ class Hungaro:
 		return self.grafo
 		
 	
-	def exportarParaMatrizAdj(self, grafoDot, nome):
+	def exportarParaMatrizAdj(self, nome):
 		print('criando arquivo com matriz de adjacencia: '+nome+'.txt')
 		arquivo = open(str(nome)+'.txt', 'w')
-		grafox = networkx.from_pydot(grafoDot)
+		grafox = networkx.from_pydot(self.grafo)
 		grafox = grafox.to_undirected()
 		listaNo = grafox.nodes()
 		for i in range(0, len(listaNo)):
@@ -427,7 +431,7 @@ class Hungaro:
 			for j in range(0, len(listaNo)):
 				if listaNo[j] in vizinhos:
 					linha+="1\t"
-					print listaNo[i]+"("+str(i)+") -- " + listaNo[j]+"("+str(j)+")"
+					#print listaNo[i]+"("+str(i)+") -- " + listaNo[j]+"("+str(j)+")"
 				else:
 					linha+="0\t"
 			linha = linha[0:-1]+"\n"
